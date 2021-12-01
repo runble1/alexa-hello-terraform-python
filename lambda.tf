@@ -1,6 +1,6 @@
 locals {
   function_name = "alexa_helloworld"
-  handler = "hello_world.lambda_handler"
+  handler = "lambda.lambda_handler"
 }
 
 # ====================
@@ -11,7 +11,7 @@ locals {
 data "archive_file" "function_source" {
   type        = "zip"
   source_dir  = "app"
-  output_path = "archive/alexa_helloworld.zip"
+  output_path = "archive/${local.function_name}.zip"
 }
 
 # ====================
@@ -31,10 +31,6 @@ resource "aws_lambda_function" "aws_function" {
   source_code_hash = data.archive_file.function_source.output_base64sha256
 
   depends_on = [aws_iam_role_policy_attachment.lambda_policy, aws_cloudwatch_log_group.lambda_log_group]
-
-  tags = {
-    Name = "${terraform.workspace}"
-  }
 }
 
 # ====================
@@ -129,7 +125,7 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
 resource "aws_lambda_permission" "with_alexa" {
   statement_id  = "AllowExecutionFromAlexa"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.aws_function.function_name
+  function_name = local.function_name
   principal     = "alexa-appkit.amazon.com"
   event_source_token = "amzn1.ask.skill.59c6f728-b3d6-4e3b-abed-f9c13dce38a0"
 }
