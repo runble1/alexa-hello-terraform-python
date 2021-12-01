@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "lambda_policy" {
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name   = "AWSAlertSlackbotLambdaPolicy"
+  name   = "AWSlexaHelloLambdaPolicy"
   policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
@@ -78,13 +78,8 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
   policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_policy_for_VPC" {
-  role       = aws_iam_role.lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
-}
-
 resource "aws_iam_role" "lambda_role" {
-  name               = "AWSAlertSlackbotLambdaRole"
+  name               = "AWSAlexaHelloLambdaRole"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -97,9 +92,6 @@ resource "aws_kms_key" "lambda_key" {
   description             = "My Lambda Function Customer Master Key"
   enable_key_rotation     = true
   deletion_window_in_days = 7
-  tags = {
-    Name = "${var.env}-slackbot"
-  }
 }
 
 resource "aws_kms_alias" "lambda_key_alias" {
