@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "lambda_policy" {
 }
 
 resource "aws_iam_policy" "lambda_policy" {
-  name   = "AWSlexaHelloLambdaPolicy"
+  name   = "AWSlexa${local.function_name}Policy"
   policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
@@ -79,7 +79,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name               = "AWSAlexaHelloLambdaRole"
+  name               = "AWSAlexa${local.function_name}Role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
