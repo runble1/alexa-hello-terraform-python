@@ -1,3 +1,4 @@
 ## Usage
 pip install -r requirements.txt -t app/  
-terraform apply
+vi dev.tfvars
+terraform apply -var-file=dev.tfvars

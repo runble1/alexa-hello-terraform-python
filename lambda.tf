@@ -1,6 +1,7 @@
 locals {
-  function_name = "alexa_helloworld"
-  handler = "lambda.lambda_handler"
+  function_name  = "alexa_helloworld"
+  handler        = "lambda.lambda_handler"
+  alexa_skill_id = var.alexa_skill_id
 }
 
 # ====================
@@ -25,7 +26,7 @@ resource "aws_lambda_function" "aws_function" {
   role          = aws_iam_role.lambda_role.arn
   runtime       = "python3.8"
   timeout       = 10
-  kms_key_arn = aws_kms_key.lambda_key.arn
+  kms_key_arn   = aws_kms_key.lambda_key.arn
 
   filename         = data.archive_file.function_source.output_path
   source_code_hash = data.archive_file.function_source.output_base64sha256
@@ -105,7 +106,7 @@ resource "aws_kms_alias" "lambda_key_alias" {
 #
 # ====================
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  name = "/aws/lambda/${local.function_name}"
+  name              = "/aws/lambda/${local.function_name}"
   retention_in_days = 30
 }
 
@@ -115,9 +116,9 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
 #
 # ====================
 resource "aws_lambda_permission" "with_alexa" {
-  statement_id  = "AllowExecutionFromAlexa"
-  action        = "lambda:InvokeFunction"
-  function_name = local.function_name
-  principal     = "alexa-appkit.amazon.com"
-  event_source_token = "amzn1.ask.skill.59c6f728-b3d6-4e3b-abed-f9c13dce38a0"
+  statement_id       = "AllowExecutionFromAlexa"
+  action             = "lambda:InvokeFunction"
+  function_name      = local.function_name
+  principal          = "alexa-appkit.amazon.com"
+  event_source_token = local.alexa_skill_id
 }
